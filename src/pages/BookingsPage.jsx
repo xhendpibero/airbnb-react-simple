@@ -1,13 +1,14 @@
 import AccountNav from "../AccountNav";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useContext} from "react";
 import axios from "axios";
 import PlaceImg from "../PlaceImg";
-import {differenceInCalendarDays, format} from "date-fns";
+import { UserContext } from "../UserContext.jsx"
 import {Link} from "react-router-dom";
 import BookingDates from "../BookingDates";
 
 export default function BookingsPage() {
   const [bookings,setBookings] = useState([]);
+  const { config } = useContext(UserContext);
   useEffect(() => {
     axios.get('/bookings').then(response => {
       setBookings(response.data);

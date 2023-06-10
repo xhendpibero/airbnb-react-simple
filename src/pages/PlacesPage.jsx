@@ -1,12 +1,14 @@
 import {Link, useParams} from "react-router-dom";
 import AccountNav from "../AccountNav";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useContext} from "react";
 import axios from "axios";
 import PlaceImg from "../PlaceImg";
+import { UserContext } from "../UserContext.jsx"
 export default function PlacesPage() {
   const [places,setPlaces] = useState([]);
+  const { config } = useContext(UserContext)
   useEffect(() => {
-    axios.get('/user-places').then(({data}) => {
+    axios.get('/user-places', config).then(({data}) => {
       setPlaces(data);
     });
   }, []);

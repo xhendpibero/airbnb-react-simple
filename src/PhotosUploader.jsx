@@ -1,6 +1,7 @@
 import axios from "axios"
-import { useState } from "react"
+import { useState, useContext } from "react"
 import Image from "./Image.jsx"
+import { UserContext } from "./UserContext.jsx"
 
 // async function isImgUrl(url) {
 //   const res = await fetch(url, { method: "HEAD" })
@@ -10,12 +11,13 @@ import Image from "./Image.jsx"
 
 export default function PhotosUploader({ addedPhotos, onChange }) {
   const [photoLink, setPhotoLink] = useState("")
+  const { config } = useContext(UserContext)
   async function addPhotoByLink(ev) {
     ev.preventDefault()
     // if (await isImgUrl(photoLink)) {
       const { data: filename } = await axios.post("/upload-by-link", {
         link: photoLink,
-      })
+      }, config)
       onChange((prev) => {
         return [...prev, filename]
       })
