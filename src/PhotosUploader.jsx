@@ -15,13 +15,17 @@ export default function PhotosUploader({ addedPhotos, onChange }) {
   async function addPhotoByLink(ev) {
     ev.preventDefault()
     // if (await isImgUrl(photoLink)) {
-      const { data: filename } = await axios.post("/upload-by-link", {
+    const { data: filename } = await axios.post(
+      "/upload-by-link",
+      {
         link: photoLink,
-      }, config)
-      onChange((prev) => {
-        return [...prev, filename]
-      })
-      setPhotoLink("")
+      },
+      config
+    )
+    onChange((prev) => {
+      return [...prev, filename]
+    })
+    setPhotoLink("")
     // }
   }
   function uploadPhoto(ev) {
@@ -40,26 +44,31 @@ export default function PhotosUploader({ addedPhotos, onChange }) {
     //       return [...prev, ...filenames]
     //     })
     //   })
-      axios
-        .post("https://vps.chipkoding.tech/upload.php", data, {
-          headers: { "Content-type": "multipart/form-data" },
-        })
-        .then(async (response) => {
-          const { data: data } = response
+    axios
+      .post("https://vps.chipkoding.tech/upload.php", data, {
+        headers: { "Content-type": "multipart/form-data" },
+      })
+      .then(async (response) => {
+        const { data: data } = response
 
-          const { data: filename } = await axios.post("/upload-by-link", {
+        const { data: filename, data: status } = await axios.post(
+          "/upload-by-link",
+          {
             vps: true,
-            link: 'https://vps.chipkoding.tech/upload/' + data.fileName,
-          }, config)
+            link: "https://vps.chipkoding.tech/upload/" + data.fileName,
+          },
+          config
+        )
 
+        if (status)
           onChange((prev) => {
             return [...prev, filename]
           })
-          // const { data: filenames } = response
-          // onChange((prev) => {
-          //   return [...prev, ...filenames]
-          // })
-        })
+        // const { data: filenames } = response
+        // onChange((prev) => {
+        //   return [...prev, ...filenames]
+        // })
+      })
   }
   function removePhoto(ev, filename) {
     ev.preventDefault()
