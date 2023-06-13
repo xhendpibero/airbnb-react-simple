@@ -28,18 +28,38 @@ export default function PhotosUploader({ addedPhotos, onChange }) {
     const files = ev.target.files
     const data = new FormData()
     for (let i = 0; i < files.length; i++) {
-      data.append("photos", files[i])
+      data.append("sendimage", files[i])
     }
-    axios
-      .post("/upload", data, {
-        headers: { "Content-type": "multipart/form-data" },
-      })
-      .then((response) => {
-        const { data: filenames } = response
-        onChange((prev) => {
-          return [...prev, ...filenames]
+    // axios
+    //   .post("/upload", data, {
+    //     headers: { "Content-type": "multipart/form-data" },
+    //   })
+    //   .then((response) => {
+    //     const { data: filenames } = response
+    //     onChange((prev) => {
+    //       return [...prev, ...filenames]
+    //     })
+    //   })
+      axios
+        .post("https://vps.chipkoding.tech/upload.php", data, {
+          headers: { "Content-type": "multipart/form-data" },
         })
-      })
+        .then(async (response) => {
+          const { data: data } = response
+
+          const { data: filename } = await axios.post("/upload-by-link", {
+            vps: true,
+            link: 'https://vps.chipkoding.tech/upload/' + data.fileName,
+          }, config)
+
+          onChange((prev) => {
+            return [...prev, filename]
+          })
+          // const { data: filenames } = response
+          // onChange((prev) => {
+          //   return [...prev, ...filenames]
+          // })
+        })
   }
   function removePhoto(ev, filename) {
     ev.preventDefault()
